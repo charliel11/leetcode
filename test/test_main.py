@@ -1,16 +1,11 @@
 from pathlib import Path
 
-import pytest
-
 from leetcode import Solution
 from loader import TreeNode, dynamical_loader, generate_loader_type_hint
 
-targets = [name.stem for name in Path("test/data/").glob("*")]
 
-
-@pytest.mark.parametrize("target", targets)
 def test_target(target):
-    test_case_path = f"test/data/{target}"
+    test_case_path = f"test/data/{target}.txt"
     f = Solution(target).__getattribute__(target)
 
     print()

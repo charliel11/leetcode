@@ -9,6 +9,7 @@ from typing import (
     TypeVar,
     Union,
     get_args,
+    get_origin,
     get_type_hints,
 )
 
@@ -37,7 +38,7 @@ def build_tree(node: list[int]) -> TreeNode:
 
 
 def is_optional(t: Type[U]) -> bool:
-    if hasattr(t, "__origin__") and t.__origin__ is Union:
+    if get_origin(t) is Union:
         args = get_args(t)
         return len(args) == 2 and (
             (args[0] is type(None) and args[1] is TreeNode)
@@ -50,8 +51,8 @@ def is_optional(t: Type[U]) -> bool:
 def parse(txt: str, t: Type[U]) -> U:
     res = json.loads(txt)
     if is_optional(t):
-        return build_tree(res)
-    return res
+        return build_tree(res)  # type: ignore
+    return res  # type: ignore
 
 
 def dynamical_loader(file: Path, t: Type[T]) -> Iterator[T]:
@@ -60,12 +61,12 @@ def dynamical_loader(file: Path, t: Type[T]) -> Iterator[T]:
     assert len(txt) % len(hints) == 0
 
     for i in range(0, len(txt), len(hints)):
-        res = ()
+        res: tuple[Any, ...] = ()
         for j, hint in enumerate(hints):
             res += (parse(txt[i + j], hint),)
-        yield res
+        yield res  # type: ignore
 
 
-def generate_loader_type_hint(f: Callable) -> Type[T]:
+def generate_loader_type_hint(f: Callable) -> type[tuple[Any, ...]]:
     type_hints = get_type_hints(f)
-    return tuple[tuple([v for _k, v in type_hints.items()])]
+    return tuple[tuple([v for _k, v in type_hints.items()])]  # type: ignore
