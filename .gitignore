@@ -10,11 +10,11 @@ wheels/
 .venv
 
 # project
-
-.*/
+.*/*
 
 test/data/
 src/leetcode/*.py
 
 !src/leetcode/__init__.py
 !src/leetcode/entry.py
+!.vscode/launch.json

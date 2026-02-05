@@ -1,0 +1,15 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Python: Pytest LeetCode",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "pytest",
+      "args": ["./test/test_main.py", "--target", "${fileBasenameNoExtension}"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "justMyCode": true
+    }
+  ]
+}
