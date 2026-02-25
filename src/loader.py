@@ -21,8 +21,23 @@ class TreeNode:
         self.right = right
 
 
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val: int = val
+        self.next: ListNode | None = next
+
+
 T = TypeVar("T", bound=tuple[Any, ...])
 U = TypeVar("U")
+
+
+def build_list(node: list[int]) -> ListNode:
+    dummy = ListNode()
+    cur = dummy
+    for val in node:
+        cur.next = ListNode(val=val)
+        cur = cur.next
+    return dummy.next  # type: ignore
 
 
 def build_tree(node: list[int]) -> TreeNode:
@@ -37,12 +52,12 @@ def build_tree(node: list[int]) -> TreeNode:
     return root
 
 
-def is_optional(t: Type[U]) -> bool:
+def is_optional_of(t: Type[U], node_type: type) -> bool:
     if get_origin(t) is Union:
         args = get_args(t)
         return len(args) == 2 and (
-            (args[0] is type(None) and args[1] is TreeNode)
-            or (args[0] is TreeNode and args[1] is type(None))
+            (args[0] is type(None) and args[1] is node_type)
+            or (args[0] is node_type and args[1] is type(None))
         )
     else:
         return False
@@ -50,7 +65,9 @@ def is_optional(t: Type[U]) -> bool:
 
 def parse(txt: str, t: Type[U]) -> U:
     res = json.loads(txt)
-    if is_optional(t):
+    if t is ListNode or is_optional_of(t, ListNode):
+        return build_list(res)  # type: ignore
+    if t is TreeNode or is_optional_of(t, TreeNode):
         return build_tree(res)  # type: ignore
     return res  # type: ignore
 
