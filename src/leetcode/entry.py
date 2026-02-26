@@ -4,6 +4,9 @@ class Solution:
 
         module = importlib.import_module(f"leetcode.{name}")
 
-        setattr(
-            self.__class__, name, module.__getattribute__("Solution").__dict__[name]
-        )
+        import inspect
+
+        for attr_name, attr_value in inspect.getmembers(
+            module.__getattribute__("Solution"), predicate=inspect.isfunction
+        ):
+            setattr(self.__class__, attr_name, attr_value)

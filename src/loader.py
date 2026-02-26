@@ -26,6 +26,10 @@ class ListNode:
         self.val: int = val
         self.next: ListNode | None = next
 
+    def __lt__(self, other: "ListNode"):
+        """for heapq"""
+        return self.val <= other.val
+
 
 T = TypeVar("T", bound=tuple[Any, ...])
 U = TypeVar("U")
@@ -40,7 +44,9 @@ def build_list(node: list[int]) -> ListNode:
     return dummy.next  # type: ignore
 
 
-def build_tree(node: list[int]) -> TreeNode:
+def build_tree(node: list[int]) -> TreeNode | None:
+    if not node:
+        return None
     root = TreeNode(val=node[0])
     q = deque([root])
     for i in range(1, len(node), 2):
@@ -69,6 +75,12 @@ def parse(txt: str, t: Type[U]) -> U:
         return build_list(res)  # type: ignore
     if t is TreeNode or is_optional_of(t, TreeNode):
         return build_tree(res)  # type: ignore
+    if get_origin(t) is list:
+        args = get_args(t)
+        if len(args) == 1 and (
+            args[0] is ListNode or is_optional_of(args[0], ListNode)
+        ):
+            return [build_list(item) if item is not None else None for item in res]  # type: ignore
     return res  # type: ignore
 
 
