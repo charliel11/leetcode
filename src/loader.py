@@ -44,17 +44,22 @@ def build_list(node: list[int]) -> ListNode:
     return dummy.next  # type: ignore
 
 
-def build_tree(node: list[int]) -> TreeNode | None:
-    if not node:
+def build_tree(node: list[int | None]) -> TreeNode | None:
+    if not node or node[0] is None:
         return None
     root = TreeNode(val=node[0])
     q = deque([root])
-    for i in range(1, len(node), 2):
+    i = 1
+    while q and i < len(node):
         cur = q.popleft()
-        cur.left = TreeNode(val=node[i])
-        cur.right = TreeNode(val=node[i + 1])
-        q.append(cur.left)
-        q.append(cur.right)
+        if i < len(node) and (lval := node[i]) is not None:
+            cur.left = TreeNode(val=lval)
+            q.append(cur.left)
+        i += 1
+        if i < len(node) and (rval := node[i]) is not None:
+            cur.right = TreeNode(val=rval)
+            q.append(cur.right)
+        i += 1
     return root
 
 

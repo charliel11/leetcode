@@ -7,6 +7,7 @@ class Solution:
         import inspect
 
         for attr_name, attr_value in inspect.getmembers(
-            module.__getattribute__("Solution"), predicate=inspect.isfunction
+            module.__getattribute__("Solution")
         ):
-            setattr(self.__class__, attr_name, attr_value)
+            if not attr_name.startswith("__"):
+                setattr(self.__class__, attr_name, attr_value)
