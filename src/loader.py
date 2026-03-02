@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import (
     Any,
     Callable,
+    Optional,
     Type,
     TypeVar,
     Union,
@@ -15,14 +16,19 @@ from typing import (
 
 
 class TreeNode:
-    def __init__(self, val=0, left=None, right=None):
+    def __init__(
+        self,
+        val: int = 0,
+        left: Optional["TreeNode"] = None,
+        right: Optional["TreeNode"] = None,
+    ):
         self.val = val
         self.left = left
         self.right = right
 
 
 class ListNode:
-    def __init__(self, val=0, next=None):
+    def __init__(self, val=0, next: Optional["ListNode"] = None):
         self.val: int = val
         self.next: ListNode | None = next
 

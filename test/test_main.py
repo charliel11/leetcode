@@ -27,10 +27,10 @@ def test_target(target):
     f = Solution(target).__getattribute__(target)
 
     print()
-    for *args, answer in dynamical_loader(
-        Path(test_case_path), generate_loader_type_hint(f)
+    for i, (*args, answer) in enumerate(
+        dynamical_loader(Path(test_case_path), generate_loader_type_hint(f)), 1
     ):
-        print(args, answer)
+        print(f"[{i}]", args, answer)
         result = f(*args)
         if isinstance(answer, float):
             assert abs(result - answer) <= 1e-5
