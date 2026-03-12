@@ -1,7 +1,13 @@
 from pathlib import Path
 
 from leetcode import Solution
-from loader import ListNode, TreeNode, dynamical_loader, generate_loader_type_hint
+from loader import (
+    ListNode,
+    TreeNode,
+    dynamical_loader,
+    generate_loader_type_hint,
+    is_return_none,
+)
 
 
 def list_equal(a: ListNode | None, b: ListNode | None) -> bool:
@@ -25,6 +31,7 @@ def tree_equal(a: TreeNode | None, b: TreeNode | None) -> bool:
 def test_target(target):
     test_case_path = f"test/data/{target}"
     f = Solution(target).__getattribute__(target)
+    inplace = is_return_none(f)
 
     print()
     for i, (*args, answer) in enumerate(
@@ -32,6 +39,8 @@ def test_target(target):
     ):
         print(f"[{i}]", args, answer)
         result = f(*args)
+        if inplace:
+            result = args[0]
         if isinstance(answer, float):
             assert abs(result - answer) <= 1e-5
         elif isinstance(answer, TreeNode):

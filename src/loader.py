@@ -107,6 +107,16 @@ def dynamical_loader(file: Path, t: Type[T]) -> Iterator[T]:
         yield res  # type: ignore
 
 
+def is_return_none(f: Callable) -> bool:
+    type_hints = get_type_hints(f)
+    return type_hints.get("return", None) is type(None)
+
+
 def generate_loader_type_hint(f: Callable) -> type[tuple[Any, ...]]:
     type_hints = get_type_hints(f)
-    return tuple[tuple([v for _k, v in type_hints.items()])]  # type: ignore
+    hints_list = [v for _k, v in type_hints.items()]
+    # When return type is None (in-place modification),
+    # use the first parameter type for the expected answer
+    if hints_list and hints_list[-1] is type(None):
+        hints_list[-1] = hints_list[0]
+    return tuple[tuple(hints_list)]  # type: ignore
